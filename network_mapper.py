@@ -89,7 +89,7 @@ def get_network_info():
     }
     return network_profile
     
-profile = get_network_info()
+# profile = get_network_info()
 # print(json.dumps(profile, indent=4))
 
 
@@ -99,9 +99,28 @@ profile = get_network_info()
 # new function to save data
 def save_file_data(data, filename="network_info.json"):
     with open(filename, 'w') as file:
+        # json.dump writes the dictionary directly into the open file object
         json.dump(data, file, indent=4)
     print(f"[+] Success: Network profile saved to {filename}")
     
     
-save_file_data(profile)
+
+
+
+# --- Execution Gatekeeper ---
+if __name__ == "__main__":
+    # 1. Gather all data into our dictionary
+    profile = get_network_info()
+    
+    # 2. Print it out to the terminal screen using our string dumper
+    print("--- Current Network Profile ---")
+    print(json.dumps(profile, indent=4))
+    
+    # 3. Save it to disk using our new function
+    save_file_data(profile)
+
+
+
+
+
     
