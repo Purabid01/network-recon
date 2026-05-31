@@ -48,6 +48,15 @@ Instead of evaluating ports sequentially, the scanner uses an optimized worker p
 
 ```
 
+#### Deep Dive: Why We Use a Thread Pool (The Core Problem)
+
+If you scan networks one port at a time (**synchronous execution**), your script encounters a severe networking bottleneck. When a port is closed or protected by a firewall, your computer must sit completely idle waiting for the connection timeout to expire before it can check the next port.
+
+* **The Slow Way (Sequential):** If you scan 7 ports and each has a 1.0-second network timeout, a series of dropped packets means your script will take a full **7 seconds** to complete.
+* **The Fast Way (Thread Pool Concurrency):** By initializing a `ThreadPoolExecutor` with `max_workers=10`, Python spawns 10 separate background threads (workers) simultaneously. The program hands all 7 ports to the workers at once. All network connections are attempted at the exact same fraction of a second. The entire scan finishes in roughly **1.0 second total** (the duration of a single timeout boundary).
+
+This shifts the utility from a slow, CPU-blocking script to a high-speed, I/O-optimized network reconnaissance tool.
+
 ---
 
 ## Reference Matrix: Targeted Network Ports
